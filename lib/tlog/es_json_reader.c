@@ -231,8 +231,9 @@ tlog_es_json_reader_init(struct tlog_json_reader *reader, va_list ap)
         goto error;
     }
 
-    /* Allow kerberos (negotiate) authentication */
-    rc = curl_easy_setopt(es_json_reader->curl, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+    /* Force basic authentication, we don't need Kerberos support and AWS's ES doesn't seem
+       to play well with anything other than BASIC auth */
+    rc = curl_easy_setopt(es_json_reader->curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
     if (rc != CURLE_OK)
         if (rc != CURLE_UNKNOWN_OPTION && rc != CURLE_NOT_BUILT_IN) {
             grc = TLOG_GRC_FROM(curl, rc);
